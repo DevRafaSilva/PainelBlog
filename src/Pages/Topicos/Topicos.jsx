@@ -17,7 +17,9 @@ const Topicos = () => {
         },
       });
       const dados = await response.json();
-      setBlog(dados);
+      const dadosArray = Array.from(dados);
+      console.log(dadosArray);
+      setBlog(dadosArray);
     }
     getPosts();
   }, []);
