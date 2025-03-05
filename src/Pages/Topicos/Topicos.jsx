@@ -10,7 +10,7 @@ const Topicos = () => {
   const [blog, setBlog] = React.useState([]);
   React.useEffect(() => {
     async function getPosts() {
-      const response = await fetch('https://joeebio.xyz/wp-json/api/blog', {
+      const response = await fetch('https://joebio.xyz/wp-json/api/blog', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
