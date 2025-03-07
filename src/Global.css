@@ -52,3 +52,13 @@ input{
   display: block;
   padding: 12px 22px;
 }
+
+button{
+  cursor: pointer;
+}
+
+button:disabled{
+  cursor:pointer;
+  background-color: #cfd8dc;
+  color:"#fff"
+}

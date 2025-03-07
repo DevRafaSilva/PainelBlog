@@ -8,6 +8,9 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 const Topicos = () => {
   const [blog, setBlog] = React.useState([]);
+  const [paginaAtual, setPaginaAtual] = React.useState(1);
+  const itemPorPagina = 2;
+
   React.useEffect(() => {
     async function getPosts() {
       const response = await fetch('https://joebio.xyz/wp-json/api/blog', {
@@ -18,12 +21,30 @@ const Topicos = () => {
       });
       const dados = await response.json();
       const dadosArray = Array.from(dados);
-      console.log(dadosArray);
       setBlog(dadosArray);
     }
     getPosts();
+    //   async function getPost() {
+    //     const response = await fetch(
+    //       'https://joebio.xyz/wp-json/api/blog/jegue',
+    //       {
+    //         method: 'GET',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //       },
+    //     );
+    //     const dados = await response.json();
+    //     console.log(dados);
+    //   }
+    //   getPost();
   }, []);
-  if (blog) {
+  console.log(blog);
+  const indexAtual = (paginaAtual - 1) * itemPorPagina;
+  const indexFinal = indexAtual + itemPorPagina;
+  const dadosBlog = blog.slice(indexAtual, indexFinal);
+
+  if (dadosBlog) {
     return (
       <>
         <Box sx={{ px: 7, py: 4 }} component="main">
@@ -37,8 +58,8 @@ const Topicos = () => {
               gap: '20px',
             }}
           >
-            {blog &&
-              blog.map((item, index) => (
+            {dadosBlog &&
+              dadosBlog.map((item, index) => (
                 <Card
                   key={index}
                   sx={{
@@ -48,8 +69,8 @@ const Topicos = () => {
                 >
                   <CardMedia
                     sx={{ height: 140 }}
-                    image="/leao.jpg"
-                    title="Imagem do post"
+                    image={item.images[0].src}
+                    title={item.images[0].titulo}
                   />
                   <CardContent>
                     <h3>{item.post_title}</h3>
@@ -61,6 +82,31 @@ const Topicos = () => {
                 </Card>
               ))}
           </Box>
+          <Button
+            sx={{ p: '8px 14px', backgroundColor: '#455a64', color: '#f5f5f5' }}
+            onClick={() => setPaginaAtual((prev) => prev - 1, 1)}
+            disabled={paginaAtual == 1}
+          >
+            ANTERIOR
+          </Button>
+          <span style={{ margin: '0px 12px' }}>
+            {paginaAtual} de {Math.ceil(blog.length / itemPorPagina)}
+          </span>
+          <Button
+            sx={{
+              p: '8px 14px',
+              backgroundColor: '#455a64',
+              color: '#f5f5f5',
+            }}
+            onClick={() =>
+              setPaginaAtual((prev) =>
+                prev * itemPorPagina < blog.length ? prev + 1 : prev,
+              )
+            }
+            disabled={indexFinal >= blog.length}
+          >
+            PRÓXIMA
+          </Button>
         </Box>
       </>
     );

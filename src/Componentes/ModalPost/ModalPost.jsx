@@ -9,6 +9,7 @@ const ModalPost = ({ setModal, dadosPost }) => {
   const [descricao, setDescricao] = React.useState('');
   const [error, setError] = React.useState(null);
   const [enviado, setEnviado] = React.useState(false);
+  const [img, setImg] = React.useState();
   React.useEffect(() => {
     function fecharModal(event) {
       if (modalRef.current && !modalRef.current.contains(event.target))
@@ -25,21 +26,22 @@ const ModalPost = ({ setModal, dadosPost }) => {
   }, []);
 
   async function postarBlog() {
-    const response = await fetch('api/wp-json/api/blog', {
+    console.log(img.target.files[0]);
+    const fileForm = new FormData();
+    const arrayConteudo = [dadosPost.titulo, dadosPost.conteudo];
+    fileForm.append('titulo', titulo);
+    fileForm.append('descricao', descricao);
+    fileForm.append('conteudo', arrayConteudo);
+    fileForm.append('categoria', 'animais');
+    fileForm.append('img', img.target.files[0]);
+    const response = await fetch('https://joebio.xyz/wp-json/api/blog', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        titulo: titulo,
-        descricao: descricao,
-        categoria: 'animais',
-        conteudo: dadosPost,
-      }),
+      body: fileForm,
     });
+    console.log(img);
     const dados = await response.json();
     console.log(dados);
-    if (typeof dados === 'number') {
+    if (dados.message) {
       setEnviado(true);
     }
     dados.code ? setError(dados.message) : null;
@@ -103,7 +105,12 @@ const ModalPost = ({ setModal, dadosPost }) => {
               label="Descrição"
               placeholder="Descrição"
             />
-            <TextField type="file" fullWidth required />
+            <TextField
+              type="file"
+              onChange={(event) => setImg(event)}
+              fullWidth
+              required
+            />
             <ButtonEnviar error={error} postarBlog={postarBlog} />
           </Box>
           {(error || enviado) && <Loading error={error} enviado={enviado} />}

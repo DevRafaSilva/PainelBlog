@@ -9,7 +9,6 @@ const Post = () => {
       <Box sx={{ flex: '1' }}>
         <div
           style={{
-            backgroundColor: '#fbfbfb',
             paddingLeft: '46px',
             paddingRight: '46px',
             height: '100vh',
